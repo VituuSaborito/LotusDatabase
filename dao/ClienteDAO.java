@@ -28,4 +28,21 @@ public class ClienteDAO {
 				throw new RuntimeException(u);
 		}
 	}
+
+	public boolean login (Usuario user) {
+		String sql = "SELECT * FROM usuarios WHERE usuario_nome = ? AND usuario_email = ? AND usuario_senha = ?";
+		
+		PreparedStatement stmt = connection.prepareStatement(sql);
+		stmt.setString(1, user.getNome());
+		stmt.setString(2, user.getEmail());
+		stmt.setString(3, user.getSenha());
+		statement.execute();
+		
+		ResultSet resultSet = statement.getResultSet();
+			
+		return resultSet.next();
+		
+		
+	}
+			
 }
