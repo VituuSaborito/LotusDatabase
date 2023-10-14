@@ -36,9 +36,9 @@ public class ClienteDAO {
 		stmt.setString(1, user.getNome());
 		stmt.setString(2, user.getEmail());
 		stmt.setString(3, user.getSenha());
-		statement.execute();
+		stmt.execute();
 		
-		ResultSet resultSet = statement.getResultSet();
+		ResultSet resultSet = stmt.getResultSet();
 			
 		return resultSet.next();
 		
