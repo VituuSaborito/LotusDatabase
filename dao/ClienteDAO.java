@@ -51,7 +51,7 @@ public class ClienteDAO {
 		}
 	}
 	
-	public static boolean login (Usuario user) throws SQLException {
+	public static boolean login(Usuario user) throws SQLException {
 		String sql = "SELECT * FROM usuario WHERE usuario_nome = ? AND usuario_email = ? AND usuario_senha = ?";
 												//ideal que usasse OR aqui para entrar com o nome ou email
 		PreparedStatement stmt = connection.prepareStatement(sql);
@@ -101,7 +101,37 @@ public class ClienteDAO {
 		
 	}
 	
+	public void exclui(Arquivos file) {
+		String sql = "DELETE FROM arquivos WHERE arquivo_nome = ? AND arquivo_caminho = ? AND arquivo_formato = ?";
+		
+		try {
+			PreparedStatement stmt = connection.prepareStatement(sql);
+			stmt.setString(1, file.getNome());
+			stmt.setString(1, file.getCaminho());
+			stmt.setString(1, file.getFormato());
+			
+			stmt.execute();
+			stmt.close();
+		} catch (SQLException u) {
+			throw new RuntimeException(u);
+		}
+	}
 	
+	public void alterar(Arquivos file) {
+		String sql = "UPDATE arquivos(arquivo_nome) SET arquivo_nome = ? WHERE arquivo_caminho = ? AND arquivo_formato = ?";
+		
+		try {
+			PreparedStatement stmt = connection.prepareStatement(sql);
+			stmt.setString(1, file.getNome());
+			stmt.setString(1, file.getCaminho());
+			stmt.setString(1, file.getFormato());
+			
+			stmt.execute();
+			stmt.close();
+		} catch (SQLException u) {
+			throw new RuntimeException(u);
+		}
+	}
 	
 	
 }
