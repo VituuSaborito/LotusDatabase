@@ -8,6 +8,7 @@ import java.util.ArrayList;
 //import java.sql.SQLException;
 
 import factory.ConnectionFactory;
+import frontend.TelaLogin;
 import modelo.Arquivos;
 import modelo.Usuario;
 
@@ -36,13 +37,16 @@ public class ClienteDAO {
 	}
 	
 	public void adiciona(Arquivos file) {
-		String sql = "INSERT INTO arquivos(arquivo_nome, arquivo_caminho, arquivo_formato) VALUES (?, ?, ?)";
+		String sql = "INSERT INTO arquivos(arquivo_nome, arquivo_caminho, arquivo_formato, usuario_nome) VALUES (?, ?, ?, ?)";
 		
 		try {
 			PreparedStatement stmt = connection.prepareStatement(sql);
 			stmt.setString(1, file.getNome());
-			stmt.setString(1, file.getCaminho());
-			stmt.setString(1, file.getFormato());
+			stmt.setString(2, file.getCaminho());
+			stmt.setString(3, file.getFormato());
+			stmt.setString(4, TelaLogin.username);
+			
+			
 			
 			stmt.execute();
 			stmt.close();
@@ -50,6 +54,10 @@ public class ClienteDAO {
 			throw new RuntimeException(u);
 		}
 	}
+	
+	
+	
+	
 	
 	public static boolean login(Usuario user) throws SQLException {
 		String sql = "SELECT * FROM usuario WHERE usuario_nome = ? AND usuario_email = ? AND usuario_senha = ?";
@@ -84,6 +92,7 @@ public class ClienteDAO {
 				while(resultadoSQL.next()) {
 					Arquivos arquivos = new Arquivos();
 					
+					arquivos.setUsuario(resultadoSQL.getString("usuario_nome"));
 					arquivos.setNome(resultadoSQL.getString("arquivo_nome"));
 					arquivos.setCaminho(resultadoSQL.getString("arquivo_caminho"));
 					arquivos.setFormato(resultadoSQL.getString("arquivo_formato"));
@@ -100,6 +109,18 @@ public class ClienteDAO {
 		return listaArquivos;
 		
 	}
+	
+	public static String usuarioMenu(String email, String senha) throws SQLException{
+		String sql = "SELECT usuario_nome FROM usuario WHERE usuario_email = '" + email + "' AND usuario_senha = '" + senha + "'";
+		
+		PreparedStatement stmt = connection.prepareStatement(sql);
+		var result = stmt.executeQuery();
+		result.next();
+		
+		return result.getString("usuario_nome");
+		
+	}
+		
 	
 	public void exclui(Arquivos file) {
 		String sql = "DELETE FROM arquivos WHERE arquivo_nome = ? AND arquivo_caminho = ? AND arquivo_formato = ?";
